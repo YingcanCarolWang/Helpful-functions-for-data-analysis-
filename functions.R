@@ -1,5 +1,5 @@
 library(tidyr)
-library(BayesFactor)
+#library(BayesFactor)
 
 ##functions for calculating and plotting adjusted CIs and SEs for repeated measures design 
 #1. for accuracy
@@ -211,44 +211,44 @@ logit <- function(p){log(p/(1-p))}
 
 
 ### function for simulating sample size
-reportBF <- function(x, digits){
-  # This function extracts a BF from a BFBayesFactor object and rounds it
-  if(missing(digits)){
-    digits <- 2
-  }
-  round(as.numeric(as.vector(x)), digits)
-}
-
-sim_sampleSize <- function(minN, batchSize, crit1, crit2, nIter, d, Seed){
-  # # Parameters
-  # minN      <- 10   # Staring sample size
-  # batchSize <- 5    # How often is the BF checked
-  # crit1     <- 10   # Upper criterion: evidence for H1
-  # crit2     <- 1/6  # Lower criterion: evidence for H0 
-  # nIter     <- 100  # Number of iterations for simulation 
-  # d         <- 0.652    # Effect size
-  set.seed(Seed)
-  for(i in 1:nIter){
-    # First iteration
-    data <- rnorm(minN, d, 1)
-    n    <- minN
-    bf   <- reportBF(ttestBF(data))
-    
-    # Loop
-    while(bf[length(bf)] < crit1 & bf[length(bf)] > crit2){
-      data <- c(data, rnorm(minN, d, 1))
-      bf[length(bf) + 1] <- reportBF(ttestBF(data))
-      n[length(n) + 1] <- n[length(n)] + batchSize
-    }
-    
-    if(i == 1){
-      df <- data.frame(id = rep(i, length(bf)), n = n, bf = bf)
-    } else {
-      df <- rbind(df, data.frame(id =  rep(i, length(bf)), n = n, bf = bf))
-    }
-  }
-  maxN <- max(df$n)
-  medianN <- median(df$n)
-  quantile <- as.vector(quantile(df$n, p=0.95))
-  return(paste0('max N: ', maxN, '; median N: ', medianN, '; 95%: ', quantile))
-}
+# reportBF <- function(x, digits){
+#   # This function extracts a BF from a BFBayesFactor object and rounds it
+#   if(missing(digits)){
+#     digits <- 2
+#   }
+#   round(as.numeric(as.vector(x)), digits)
+# }
+# 
+# sim_sampleSize <- function(minN, batchSize, crit1, crit2, nIter, d, Seed){
+#   # # Parameters
+#   # minN      <- 10   # Staring sample size
+#   # batchSize <- 5    # How often is the BF checked
+#   # crit1     <- 10   # Upper criterion: evidence for H1
+#   # crit2     <- 1/6  # Lower criterion: evidence for H0 
+#   # nIter     <- 100  # Number of iterations for simulation 
+#   # d         <- 0.652    # Effect size
+#   set.seed(Seed)
+#   for(i in 1:nIter){
+#     # First iteration
+#     data <- rnorm(minN, d, 1)
+#     n    <- minN
+#     bf   <- reportBF(ttestBF(data))
+#     
+#     # Loop
+#     while(bf[length(bf)] < crit1 & bf[length(bf)] > crit2){
+#       data <- c(data, rnorm(minN, d, 1))
+#       bf[length(bf) + 1] <- reportBF(ttestBF(data))
+#       n[length(n) + 1] <- n[length(n)] + batchSize
+#     }
+#     
+#     if(i == 1){
+#       df <- data.frame(id = rep(i, length(bf)), n = n, bf = bf)
+#     } else {
+#       df <- rbind(df, data.frame(id =  rep(i, length(bf)), n = n, bf = bf))
+#     }
+#   }
+#   maxN <- max(df$n)
+#   medianN <- median(df$n)
+#   quantile <- as.vector(quantile(df$n, p=0.95))
+#   return(paste0('max N: ', maxN, '; median N: ', medianN, '; 95%: ', quantile))
+# }
